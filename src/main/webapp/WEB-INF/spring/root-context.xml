@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- root-context.xml : 프로젝트를 실행하기 위한 기본 설정하는 파일 -->
+	
+	<!-- 
+		디비연결하는 객체를 하나 만들고 
+		디비 설정하는 sqlSessionFactory객체 안에 데이터베이스소스, 마이바티스, mapper파일에 대한 설정을 담아 놓음.
+		그리고
+		SqlSessionTemplate를 실행하기 위해서 factory에 담아 놓은 정보들을 참고함.
+	 -->
+	
+	<!-- DriverManagerDataSource : DataSource 정보를 가지고 있는 객체 
+		 DB연결시 필요한 접속 정보를 가지고 있는 객체 
+	-->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" 
+	             value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+	   <property name="url" 
+	             value="jdbc:log4jdbc:mysql://localhost:3306/springdb?useSSL=false"/>
+		<!-- <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/springdb?useSSL=false"/> -->
+		<property name="username">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>1234</value>
+		</property>
+	</bean>	
+	<!-- DataSource 객체 -->	
+		
+	<!-- SqlSessionFactory 객체 -->	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		
+		<property name="dataSource" ref="dataSource" />	
+		<property name="configLocation" value="classpath:/mybatis-config.xml" /> <!-- main으로 가겠다. -->
+		<property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml"></property>
+		
+	</bean>	
+	<!-- SqlSessionFactory 객체 -->	
+	
+	<!-- SqlSessionTemplate 객체(SqlSession) -->
+	<bean id="sqlSession" 
+		  class="org.mybatis.spring.SqlSessionTemplate"
+		  destroy-method="clearCache">
+		  
+		  <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	
+	</bean>
+	<!-- SqlSessionTemplate 객체(SqlSession) -->
+	
+	<!-- DAO 관련 패키지(persistence) 추가(DB패키지에 접근 가능) -->
+	<context:component-scan base-package="com.itwillbs.persistence" />
+	
+	<!-- 서비스 관련 패키지(service) 추가(DB패키지에 접근 가능) -->
+	<context:component-scan base-package="com.itwillbs.service" />
+	
+	<!-- root-context에서 객체를 준비하고 있는데 준비된 객체를 가져다 쓰기 위해 @Reposi~ @Service -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+		
+		
+		
+		
+</beans>

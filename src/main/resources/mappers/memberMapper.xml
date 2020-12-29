@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- 해당조건을 처리하기 위해 ? 구문대신 #{} 사용
+  	   #{} 구문은 get()/set() - MyBaits홈페이지가서 찾아보기!! 
+   -->
+  
+  <!-- namespace : mapper를 외부에서 찾아오기 위한 속성 -->
+  <mapper namespace="com.itwillbs.mapper.MemberMapper">
+  	
+  	<!-- resultType :리턴받는 타입 -->
+  	<select id="getTime" resultType="string">
+  		select now()
+  	</select>
+  	
+  	<insert id="insertMember">
+  		insert into tbl_member(userid,userpw,username,useremail)  
+  		values (#{userid},#{userpw},#{username},#{useremail})
+  	</insert>
+  	
+  	<!-- 마이바티스가 셀렉트한 값을 resultType의 타입으로 바ㄱ꿔줘서 dao구현하는 곳으로 간다. -->
+  	<select id="readMember" 
+             resultType="com.itwillbs.domain.MemberVO">
+      select 
+      *
+      from
+      tbl_member 
+      where userid=#{userid}     
+     </select>
+     
+     
+     <select id="readWithIDPW" resultType="com.itwillbs.domain.MemberVO">
+     	select
+     	*
+     	from 
+     	tbl_member
+     	where 
+     	 userid = #{userid} and userpw = #{userpw}
+     </select>
+     
+     <update id="updateMember">
+     	update tbl_member
+     	set username= #{username}, useremail= #{useremail},updatedate=now() 
+     	where userid= #{userid} and userpw = #{userpw}
+     </update>
+     
+     <delete id="deleteMember">
+     	delete  
+     	from tbl_member
+     	where userid= #{userid} and userpw = #{userpw}
+     </delete>
+  	
+  	<!-- 왜 list가 아니라 vo를 전달하지? 마이바티스 객체인 sqlSession이 list를 만든다. sqlSession.selectList(statement)  -->
+  	<select id="listMember" resultType="com.itwillbs.domain.MemberVO">
+  		select *
+  		from tbl_member
+  	</select>
+  	
+  	
+  	
+  
+  </mapper>
+  
+  
